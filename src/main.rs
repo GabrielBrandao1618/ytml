@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 
 mod ast;
+mod html;
 use ast::Tag;
+use html::ast_to_html;
 
 fn main() {
     let root = Tag {
@@ -21,4 +23,5 @@ fn main() {
         ],
     };
     println!("{}", root);
+    ast_to_html(&root, "./out.html");
 }

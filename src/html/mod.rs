@@ -1,6 +1,17 @@
 use super::ast::{Tag, TagInnerElement};
 
-pub fn ast_to_html(ast: &Tag, indent_level: usize) -> String {
+pub fn ast_to_html(ast: Vec<Tag>) -> String {
+    let mut html_content = String::new();
+
+    for root_tag in ast.iter() {
+        let html_tag = ast_tag_to_html(root_tag, 0);
+        html_content.push_str(&format!("{}\n", html_tag));
+    }
+
+    html_content
+}
+
+pub fn ast_tag_to_html(ast: &Tag, indent_level: usize) -> String {
     let mut tag_content = String::new();
     let mut attributes_rep = String::new();
 
@@ -17,7 +28,7 @@ pub fn ast_to_html(ast: &Tag, indent_level: usize) -> String {
             TagInnerElement::Tag { tag } => {
                 tag_content.push_str(&format!(
                     "\n{html}",
-                    html = &ast_to_html(tag, indent_level + 2),
+                    html = &ast_tag_to_html(tag, indent_level + 2),
                 ));
             }
             TagInnerElement::Text { content } => tag_content.push_str(&format!(

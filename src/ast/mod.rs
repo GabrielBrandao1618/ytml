@@ -30,7 +30,6 @@ impl fmt::Display for Tag {
                     let unwraped_inner = format!("{}", content);
                     inner_rep.push_str(&unwraped_inner);
                 }
-                _ => println!("TODO"),
             }
         }
         write!(

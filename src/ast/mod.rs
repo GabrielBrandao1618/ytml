@@ -16,13 +16,13 @@ impl fmt::Display for Tag<'static> {
         }
         let mut inner_rep = String::new();
         for inner in &self.inner {
-            let unwraped_inner = format!("\n{}", inner);
+            let unwraped_inner = format!("{}", inner);
             inner_rep.push_str(&unwraped_inner);
         }
         write!(
             f,
-            "{}({}) {{\n{}\n}}",
-            self.name, attributes_rep, inner_rep
+            "{name}({attributes}) -> {inner_rep}",
+            name = self.name, attributes = attributes_rep, inner_rep = inner_rep
         )
     }
 }

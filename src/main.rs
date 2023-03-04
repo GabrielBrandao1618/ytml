@@ -22,6 +22,6 @@ fn main() {
             }),
         ],
     };
-    println!("{}", root);
-    ast_to_html(&root, "./out.html");
+    let html_out = ast_to_html(&root, 0);
+    println!("{}", html_out);
 }

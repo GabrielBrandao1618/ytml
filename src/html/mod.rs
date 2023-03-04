@@ -1,8 +1,31 @@
-use std::{fs::File, io::Write};
-
 use super::ast::Tag;
 
-pub fn ast_to_html(ast: &Tag, output_path: &str) {
-    let mut file = File::create(output_path).unwrap();
-    file.write(format!("{}", ast.name).as_bytes());
+pub fn ast_to_html(ast: &Tag, indent_level: usize) -> String {
+    let mut tag_content = String::new();
+    let mut attributes_rep = String::new();
+
+    for (key, val) in ast.attributes.iter() {
+        attributes_rep.push_str(&format!(
+            "{attribute} = \"{val}\" ",
+            attribute = key,
+            val = val
+        ));
+    }
+    tag_content.push_str(&format!(
+        "{indent}<{tagname} {attributes_rep}>",
+        tagname = ast.name,
+        indent = String::from(" ".repeat(indent_level))
+    ));
+    for child in &ast.inner {
+        tag_content.push_str(&format!(
+            "\n{html}",
+            html = &ast_to_html(child, indent_level + 2),
+        ));
+    }
+    tag_content.push_str(&format!(
+        "\n{indent}</{tagname}>",
+        tagname = ast.name,
+        indent = String::from(" ".repeat(indent_level))
+    ));
+    tag_content
 }

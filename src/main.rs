@@ -22,7 +22,7 @@ fn main() {
             }),
         }],
     };
-    let raw_ytml = "html(lang = \"pt-br\") { content test } body(){} ";
+    let raw_ytml = "html(lang = \"pt-br\") { content test } body(){ p(color = \"blue\"){}} ";
     let result = ytml_doc_to_ast(raw_ytml);
     for tag in result {
         println!("{}", tag);

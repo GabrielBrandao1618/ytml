@@ -92,6 +92,7 @@ mod tests {
     use super::*;
     #[test]
     fn check_out() {
-        ytml_doc_to_ast("html(lang = \"pt-br\"){ }");
+        let raw_ytml = "html(lang = \"pt-br\"){ } body(color = \"blue\"){p(color=\"red\"){content}}";
+        ytml_doc_to_ast(raw_ytml);
     }
 }

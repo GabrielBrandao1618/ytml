@@ -76,6 +76,6 @@ mod tests {
     use super::*;
     #[test]
     fn check_out() {
-        ytml_to_ast("html(lang = \"pt-br\"){{ }}");
+        ytml_tag_to_ast("html(lang = \"pt-br\"){ }");
     }
 }

@@ -1,4 +1,4 @@
-text       = @{ (ASCII_ALPHANUMERIC | "-")+ }
+text       =  { (ASCII_ALPHANUMERIC | "-")+ }
 string     = ${ "\"" ~ text ~ "\"" }
 tag_name   =  { text }
 prop_name  =  { text }

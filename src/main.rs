@@ -22,7 +22,7 @@ fn main() {
             }),
         }],
     };
-    let raw_ytml = "html(lang = \"pt-br\") { content } ";
+    let raw_ytml = "html(lang = \"pt-br\") { content test } ";
     let result = ytml_tag_to_ast(raw_ytml);
     println!("{}", result);
 }

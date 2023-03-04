@@ -5,11 +5,7 @@ pub fn ast_to_html(ast: &Tag, indent_level: usize) -> String {
     let mut attributes_rep = String::new();
 
     for (key, val) in ast.attributes.iter() {
-        attributes_rep.push_str(&format!(
-            "{attribute} = \"{val}\" ",
-            attribute = key,
-            val = val
-        ));
+        attributes_rep.push_str(&format!("{attribute} = {val} ", attribute = key, val = val));
     }
     tag_content.push_str(&format!(
         "{indent}<{tagname} {attributes_rep}>",
@@ -23,10 +19,12 @@ pub fn ast_to_html(ast: &Tag, indent_level: usize) -> String {
                     "\n{html}",
                     html = &ast_to_html(tag, indent_level + 2),
                 ));
-            },
-            TagInnerElement::Text { content } => {
-                tag_content.push_str(&format!("{}", content))
             }
+            TagInnerElement::Text { content } => tag_content.push_str(&format!(
+                "\n{indent}{content}",
+                content = content,
+                indent = String::from(" ".repeat(indent_level + 2))
+            )),
         }
     }
     tag_content.push_str(&format!(

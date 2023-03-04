@@ -2,8 +2,10 @@ use std::collections::HashMap;
 
 mod ast;
 mod html;
+mod ytml;
+
 use ast::Tag;
-use html::ast_to_html;
+use ytml::ytml_to_ast;
 
 fn main() {
     let root = Tag {
@@ -22,6 +24,6 @@ fn main() {
             }),
         ],
     };
-    let html_out = ast_to_html(&root, 0);
-    println!("{}", html_out);
+    let result = ytml_to_ast("html(lang = \"pt-br\"){{ }}");
+    println!("{:#?}", result);
 }

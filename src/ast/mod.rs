@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use std::fmt;
 
-pub struct Tag<'a> {
+pub struct Tag{
     pub name: String,
-    pub attributes: HashMap<&'a str, &'a str>,
-    pub inner: Vec<Box<Tag<'a>>>,
+    pub attributes: HashMap<String, String>,
+    pub inner: Vec<Box<Tag>>,
 }
 
-impl fmt::Display for Tag<'static> {
+impl fmt::Display for Tag {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut attributes_rep = String::new();
         for (key, val) in self.attributes.iter() {

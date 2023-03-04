@@ -1,10 +1,12 @@
 text       = @{ (ASCII_ALPHANUMERIC | "-")* }
 string     = ${ "\"" ~ text ~ "\"" }
-tag_name   = { text }
-prop_name  = { text }
-prop_value = { string }
-tag_prop   = { prop_name ~ "=" ~ prop_value }
-tag        = { tag_name ~ "(" ~ tag_prop* ~ ")" ~ "{" ~ tag* | text ~ "}" }
+tag_name   =  { text }
+prop_name  =  { text }
+prop_value =  { string }
+tag_props  =  { tag_prop+ }
+tag_prop   =  { prop_name ~ "=" ~ prop_value }
+tag_inner  =  { tag+ | text }
+tag        =  { tag_name ~ "(" ~ tag_props? ~ ")" ~ "{" ~ tag* | text ~ "}" }
 
 doc = { SOI ~ tag* ~ EOI }
 

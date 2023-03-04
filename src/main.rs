@@ -10,7 +10,10 @@ use ytml::ytml_to_ast;
 fn main() {
     let root = Tag {
         name: String::from("html"),
-        attributes: HashMap::from([("href", "http://google.com"), ("color", "blue")]),
+        attributes: HashMap::from([
+            (String::from("href"), String::from("http://google.com")),
+            (String::from("color"), String::from("blue")),
+        ]),
         inner: vec![
             Box::new(Tag {
                 name: String::from("head"),
@@ -24,6 +27,6 @@ fn main() {
             }),
         ],
     };
-    let result = ytml_to_ast("html(lang = \"pt-br\"){{ }}");
-    println!("{:#?}", result);
+    let result = ytml_to_ast("html(lang = \"pt-br\" color = \"blue\"){{ }}");
+    println!("{}", result);
 }

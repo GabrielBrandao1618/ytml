@@ -1,4 +1,4 @@
-use super::ast::Tag;
+use super::ast::{Tag, TagInnerElement};
 
 pub fn ast_to_html(ast: &Tag, indent_level: usize) -> String {
     let mut tag_content = String::new();
@@ -17,10 +17,17 @@ pub fn ast_to_html(ast: &Tag, indent_level: usize) -> String {
         indent = String::from(" ".repeat(indent_level))
     ));
     for child in &ast.inner {
-        tag_content.push_str(&format!(
-            "\n{html}",
-            html = &ast_to_html(child, indent_level + 2),
-        ));
+        match child {
+            TagInnerElement::Tag { tag } => {
+                tag_content.push_str(&format!(
+                    "\n{html}",
+                    html = &ast_to_html(tag, indent_level + 2),
+                ));
+            },
+            TagInnerElement::Text { content } => {
+                tag_content.push_str(&format!("{}", content))
+            }
+        }
     }
     tag_content.push_str(&format!(
         "\n{indent}</{tagname}>",

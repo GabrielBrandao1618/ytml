@@ -5,13 +5,13 @@ use pest::{
     Parser,
 };
 
-use crate::ast::Tag;
+use crate::ast::{Tag, TagInnerElement};
 
 #[derive(pest_derive::Parser)]
 #[grammar = "ytml/grammar/ytml.pest"]
 pub struct YtmlParser {}
 
-pub fn ytml_to_ast(input: &str) -> Tag {
+pub fn ytml_tag_to_ast(input: &str) -> Tag {
     let pairs = YtmlParser::parse(Rule::tag, input).unwrap();
     let mut initial_tag = Tag {
         name: String::new(),
@@ -31,6 +31,22 @@ pub fn ytml_to_ast(input: &str) -> Tag {
                         initial_tag.attributes.insert(prop_name, prop_val);
                     }
                 }
+                Rule::tag_inner => {
+                    for inner_element in tag_component.into_inner() {
+                        match inner_element.as_rule() {
+                            Rule::tag => {
+                                let unwrapped_tag = ytml_tag_to_ast(inner_element.as_str());
+                                initial_tag
+                                    .inner
+                                    .push(TagInnerElement::Tag { tag: unwrapped_tag });
+                            }
+                            Rule::text => initial_tag.inner.push(TagInnerElement::Text {
+                                content: inner_element.as_str().to_owned(),
+                            }),
+                            _ => unreachable!(),
+                        }
+                    }
+                }
                 _ => println!("Did not match"),
             }
         }
@@ -45,11 +61,11 @@ fn unwrap_tag_prop(prop: Pair<Rule>) -> (String, String) {
         match component.as_rule() {
             Rule::prop_name => {
                 prop_name = component.as_str().to_owned();
-            },
+            }
             Rule::prop_value => {
                 prop_value = component.as_str().to_owned();
-            },
-            _ => unreachable!()
+            }
+            _ => unreachable!(),
         }
     }
     (prop_name, prop_value)

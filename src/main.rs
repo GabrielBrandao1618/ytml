@@ -4,8 +4,8 @@ mod ast;
 mod html;
 mod ytml;
 
-use ast::Tag;
-use ytml::ytml_to_ast;
+use ast::{Tag, TagInnerElement};
+use ytml::ytml_tag_to_ast;
 
 fn main() {
     let root = Tag {
@@ -14,19 +14,15 @@ fn main() {
             (String::from("href"), String::from("http://google.com")),
             (String::from("color"), String::from("blue")),
         ]),
-        inner: vec![
-            Box::new(Tag {
-                name: String::from("head"),
+        inner: vec![TagInnerElement::Tag {
+            tag: (Tag {
+                name: String::from("html"),
                 attributes: HashMap::new(),
                 inner: vec![],
             }),
-            Box::new(Tag {
-                name: String::from("title"),
-                attributes: HashMap::new(),
-                inner: Vec::new(),
-            }),
-        ],
+        }],
     };
-    let result = ytml_to_ast("html(lang = \"pt-br\" color = \"blue\"){{ }}");
+    let raw_ytml = "html(lang = \"pt-br\") { content } ";
+    let result = ytml_tag_to_ast(raw_ytml);
     println!("{}", result);
 }

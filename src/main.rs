@@ -5,7 +5,7 @@ mod html;
 mod ytml;
 
 use ast::{Tag, TagInnerElement};
-use ytml::ytml_tag_to_ast;
+use ytml::{ytml_tag_to_ast,ytml_doc_to_ast};
 
 fn main() {
     let root = Tag {
@@ -22,7 +22,9 @@ fn main() {
             }),
         }],
     };
-    let raw_ytml = "html(lang = \"pt-br\") { content test } ";
-    let result = ytml_tag_to_ast(raw_ytml);
-    println!("{}", result);
+    let raw_ytml = "html(lang = \"pt-br\") { content test } body(){} ";
+    let result = ytml_doc_to_ast(raw_ytml);
+    for tag in result {
+        println!("{}", tag);
+    }
 }

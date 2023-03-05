@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 use std::fmt;
 
+#[derive(Clone)]
 pub enum TagInnerElement {
     Tag { tag: Tag },
     Text { content: String },
 }
 
+#[derive(Clone)]
 pub struct Tag {
     pub name: String,
     pub attributes: HashMap<String, String>,

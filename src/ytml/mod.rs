@@ -1,9 +1,6 @@
 use std::collections::HashMap;
 
-use pest::{
-    iterators::Pair,
-    Parser,
-};
+use pest::{iterators::Pair, Parser};
 
 use crate::ast::{Tag, TagInnerElement};
 
@@ -21,9 +18,9 @@ pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
         match tag.as_rule() {
             Rule::EOI => break,
             Rule::tag => {
-                let unwrapped_tag = ytml_tag_to_ast(tag);
-                doc_root_tags.push(unwrapped_tag);
-            },
+                let unwrapped_tags = ytml_tag_to_ast(tag);
+                doc_root_tags.push(unwrapped_tags);
+            }
             _ => unreachable!(),
         }
     }
@@ -53,9 +50,7 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
                     match inner_element.as_rule() {
                         Rule::tag => {
                             let unwrapped_tag = ytml_tag_to_ast(inner_element);
-                            initial_tag
-                                .inner
-                                .push(TagInnerElement::Tag { tag: unwrapped_tag });
+                            initial_tag.inner.push(TagInnerElement::Tag { tag: unwrapped_tag });
                         }
                         Rule::text => initial_tag.inner.push(TagInnerElement::Text {
                             content: inner_element.as_str().to_owned(),
@@ -63,6 +58,9 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
                         _ => unreachable!(),
                     }
                 }
+            }
+            Rule::tag_multiplier => {
+                println!("TODO: multiplier operator");
             }
             _ => println!("Did not match: {:#?}", tag_component.as_rule()),
         }
@@ -92,7 +90,8 @@ mod tests {
     use super::*;
     #[test]
     fn check_out() {
-        let raw_ytml = "html(lang = \"pt-br\"){ } body(color = \"blue\"){p(color=\"red\"){content}}";
+        let raw_ytml =
+            "html(lang = \"pt-br\"){ } body(color = \"blue\"){p(color=\"red\"){content}}";
         ytml_doc_to_ast(raw_ytml);
     }
 }

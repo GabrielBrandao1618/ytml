@@ -20,7 +20,7 @@ Is equivalent to
 
 ```
 html(lang = "pt-br"){
-  body(){
+  body {
     p(color = "blue") {
       Hello there
     }

@@ -50,7 +50,9 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
                     match inner_element.as_rule() {
                         Rule::tag => {
                             let unwrapped_tag = ytml_tag_to_ast(inner_element);
-                            initial_tag.inner.push(TagInnerElement::Tag { tag: unwrapped_tag });
+                            initial_tag
+                                .inner
+                                .push(TagInnerElement::Tag { tag: unwrapped_tag });
                         }
                         Rule::text => initial_tag.inner.push(TagInnerElement::Text {
                             content: inner_element.as_str().to_owned(),
@@ -61,19 +63,24 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
             }
             Rule::tag_multiplier => {
                 println!("TODO: multiplier operator");
-            },
+            }
             Rule::tag_class => {
                 let class_name = tag_component.into_inner().next().unwrap().as_str();
                 let mut full_classname = String::new();
                 match initial_tag.attributes.get("class") {
                     Some(val) => full_classname = val.to_owned(),
-                    None => ()
+                    None => (),
                 }
                 full_classname.push_str(&format!("\"{}\"", class_name));
-                initial_tag.attributes.insert(String::from("class"), full_classname);
-            },
+                initial_tag
+                    .attributes
+                    .insert(String::from("class"), full_classname);
+            }
             Rule::tag_id => {
-                println!("TODO: tag id shortcut");
+                let id = tag_component.into_inner().next().unwrap().as_str();
+                initial_tag
+                    .attributes
+                    .insert(String::from("id"), format!("\"{}\"", id.to_owned()));
             }
             _ => println!("Did not match: {:#?}", tag_component.as_rule()),
         }

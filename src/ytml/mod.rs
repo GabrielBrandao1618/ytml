@@ -61,6 +61,19 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
             }
             Rule::tag_multiplier => {
                 println!("TODO: multiplier operator");
+            },
+            Rule::tag_class => {
+                let class_name = tag_component.into_inner().next().unwrap().as_str();
+                let mut full_classname = String::new();
+                match initial_tag.attributes.get("class") {
+                    Some(val) => full_classname = val.to_owned(),
+                    None => ()
+                }
+                full_classname.push_str(&format!("\"{}\"", class_name));
+                initial_tag.attributes.insert(String::from("class"), full_classname);
+            },
+            Rule::tag_id => {
+                println!("TODO: tag id shortcut");
             }
             _ => println!("Did not match: {:#?}", tag_component.as_rule()),
         }

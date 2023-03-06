@@ -71,7 +71,7 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
                     Some(val) => full_classname = val.to_owned(),
                     None => (),
                 }
-                full_classname.push_str(&format!("\"{}\"", class_name));
+                full_classname.push_str(&format!("{}", class_name));
                 initial_tag
                     .attributes
                     .insert(String::from("class"), full_classname);
@@ -80,7 +80,7 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
                 let id = tag_component.into_inner().next().unwrap().as_str();
                 initial_tag
                     .attributes
-                    .insert(String::from("id"), format!("\"{}\"", id.to_owned()));
+                    .insert(String::from("id"), format!("{}", id.to_owned()));
             }
             _ => println!("Did not match: {:#?}", tag_component.as_rule()),
         }
@@ -97,7 +97,8 @@ fn unwrap_tag_prop(prop: Pair<Rule>) -> (String, String) {
                 prop_name = component.as_str().to_owned();
             }
             Rule::prop_value => {
-                prop_value = component.as_str().to_owned();
+                let val = component.clone().into_inner().next().unwrap().into_inner().next().unwrap().as_str();
+                prop_value = val.to_owned();
             }
             _ => unreachable!(),
         }
@@ -109,9 +110,19 @@ fn unwrap_tag_prop(prop: Pair<Rule>) -> (String, String) {
 mod tests {
     use super::*;
     #[test]
-    fn check_out() {
+    fn test_parse() {
         let raw_ytml =
-            "html(lang = \"pt-br\"){ } body(color = \"blue\"){p(color=\"red\"){content}}";
-        ytml_doc_to_ast(raw_ytml);
+            "html(lang = \"pt-br\"){ } body.container#unique(color = \"blue\"){p(color=\"red\"){content}}";
+        let ast = ytml_doc_to_ast(raw_ytml);
+        let root = ast.iter().nth(0).unwrap();
+        root.attributes.get(&String::from("lang")).unwrap();
+
+        let body = ast.iter().nth(1).unwrap();
+        // Ensure that both class and id properties was persed sucessfully
+        let body_class = body.attributes.get(&String::from("class")).unwrap();
+        let body_id = body.attributes.get(&String::from("id")).unwrap();
+
+        assert_eq!(body_class, &String::from("container"));
+        assert_eq!(body_id, &String::from("unique"));
     }
 }

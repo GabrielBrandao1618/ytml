@@ -16,7 +16,7 @@ pub fn ast_tag_to_html(ast: &Tag, indent_level: usize, indent: usize) -> String 
     let mut attributes_rep = String::new();
 
     for (key, val) in ast.attributes.iter() {
-        attributes_rep.push_str(&format!("{attribute} = {val} ", attribute = key, val = val));
+        attributes_rep.push_str(&format!("{attribute} = \"{val}\" ", attribute = key, val = val));
     }
     tag_content.push_str(&format!(
         "{indent}<{tagname} {attributes_rep}>",

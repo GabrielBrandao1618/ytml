@@ -8,6 +8,8 @@ pub enum Command {
         input_file: String,
         #[arg(help = "Path to .html file")]
         output_file: String,
+        #[arg(default_value_t = 2, long)]
+        indent: u8,
     }
 }
 

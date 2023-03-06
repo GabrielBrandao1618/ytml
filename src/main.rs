@@ -18,9 +18,10 @@ fn main() {
         Command::Parse {
             input_file,
             output_file,
+            indent
         } => {
             let file_ast = read_file_into_ast(&input_file);
-            write_html_to_file(&output_file, file_ast);
+            write_html_to_file(&output_file, file_ast, indent.into());
         }
     }
 }

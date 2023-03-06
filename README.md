@@ -11,7 +11,7 @@ It works like Typescript, which is compiled into Javascript. ytml files can be c
 ```html
 <html lang="pt-br">
   <body>
-    <p color="blue">Hello there</p>
+    <p color="blue" class="paragraph" id="first">Hello there</p>
   </body>
 </html>
 ```
@@ -21,7 +21,7 @@ Is equivalent to
 ```
 html(lang = "pt-br"){
   body {
-    p(color = "blue") {
+    p.paragraph#first(color = "blue") {
       Hello there
     }
   }
@@ -38,3 +38,7 @@ Where
 
 - INPUT_FILE is the path to the .ytml file you want to compile into html
 - OUTPUT_FILE is the path to the .html file you want the ytml to be compiled into
+
+The indentation is 2 by default, but you can pass a custom indentation with the --indent flag:
+
+`ytml parse in.ytml out.html --indent 4`

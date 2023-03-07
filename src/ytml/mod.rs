@@ -82,7 +82,7 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
                     .attributes
                     .insert(String::from("id"), format!("{}", id.to_owned()));
             }
-            _ => println!("Did not match: {:#?}", tag_component.as_rule()),
+            _ => unreachable!("Did not match: {:#?}", tag_component.as_rule()),
         }
     }
     initial_tag

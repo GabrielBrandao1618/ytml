@@ -1,8 +1,8 @@
 mod ast;
 mod cli;
+mod file_handling;
 mod html;
 mod ytml;
-mod file_handling;
 
 use clap::Parser;
 
@@ -10,8 +10,6 @@ use notify::{Config, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
 use std::sync::mpsc::channel;
 
-use file_handling::file_input::read_file_into_ast;
-use file_handling::file_output::write_html_to_file;
 use file_handling::compile_ytml_file;
 
 use cli::{Cli, Command};
@@ -37,13 +35,6 @@ fn main() -> notify::Result<()> {
             let (tx, rx) = channel();
 
             let input_file_path = Path::new(&input_file);
-            let actual_output = output_file.unwrap_or(
-                input_file_path
-                    .with_extension("html")
-                    .to_str()
-                    .unwrap()
-                    .to_owned(),
-            );
             let mut file_watcher = RecommendedWatcher::new(tx, Config::default()).unwrap();
             file_watcher
                 .watch(input_file_path, RecursiveMode::NonRecursive)
@@ -55,9 +46,12 @@ fn main() -> notify::Result<()> {
                     Ok(event) => match &event.kind {
                         notify::EventKind::Modify(_) => {
                             if input_file_path.is_file() {
-                                let file_ast = read_file_into_ast(&input_file);
-                                write_html_to_file(&actual_output, file_ast, indent.into());
-                                println!("Compiled {in} into {out}", in = input_file, out = actual_output);
+                                let (_, output) = compile_ytml_file(
+                                    input_file_path.to_str().unwrap().to_owned(),
+                                    output_file.clone(),
+                                    indent.into(),
+                                );
+                                println!("Compiled {in} into {out}", in = input_file, out = output);
                             } else if input_file_path.is_dir() {
                                 // Watch for all files in the directory
                                 let input_file_paths = event.paths;

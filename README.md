@@ -67,3 +67,9 @@ Where
 The indentation is 2 by default, but you can pass a custom indentation with the --indent flag:
 
 `ytml parse in.ytml out.html --indent 4`
+
+You can watch for file changes and compile automatically with the watch mode:
+
+`ytml watch in.ytml out.html`
+
+🚧 File edits changes with by vim, neovim, and other text-based editors currently can't be observed 🚧

@@ -2,7 +2,7 @@ use clap::{Parser, Subcommand};
 
 #[derive(Subcommand)]
 pub enum Command {
-    #[clap(about = "parse a ytml file into a html file")]
+    #[clap(about = "Parse a ytml file into a html file")]
     Parse {
         #[arg(help = "Path to .ytml file")]
         input_file: String,
@@ -11,6 +11,7 @@ pub enum Command {
         #[arg(default_value_t = 2, long)]
         indent: u8,
     },
+    #[clap(about = "Watch for file changes and parse ytml into html")]
     Watch {
         #[arg(help = "Path to .ytml file")]
         input_file: String,

@@ -24,15 +24,7 @@ fn main() -> notify::Result<()> {
             output_file,
             indent,
         } => {
-            let file_ast = read_file_into_ast(&input_file);
-            let output_file_path = output_file.unwrap_or(
-                Path::new(&input_file)
-                    .with_extension("html")
-                    .to_str()
-                    .unwrap()
-                    .to_owned(),
-            );
-            write_html_to_file(&output_file_path, file_ast, indent.into());
+            compile_ytml_file(input_file, output_file, indent.into());
             Ok(())
         }
 
@@ -66,17 +58,16 @@ fn main() -> notify::Result<()> {
                                 write_html_to_file(&actual_output, file_ast, indent.into());
                                 println!("Compiled {in} into {out}", in = input_file, out = actual_output);
                             } else if input_file_path.is_dir() {
+                                // Watch for all files in the directory
                                 let input_file_paths = event.paths;
                                 for path in input_file_paths {
                                     if path.extension().unwrap() == "ytml" {
-                                        let file_ast = read_file_into_ast(path.to_str().unwrap());
-                                        let output_path = path.with_extension("html");
-                                        write_html_to_file(
-                                            output_path.to_str().unwrap(),
-                                            file_ast,
+                                        let out = compile_ytml_file(
+                                            path.to_str().unwrap().to_owned(),
+                                            None,
                                             indent.into(),
                                         );
-                                        println!("Compiled {in} into {out}", in = path.to_str().unwrap(), out = output_path.to_str().unwrap());
+                                        println!("Compiled {in} into {out}", in = path.to_str().unwrap(), out = out);
                                     }
                                 }
                             }
@@ -90,4 +81,17 @@ fn main() -> notify::Result<()> {
             Ok(())
         }
     }
+}
+
+fn compile_ytml_file(input_path: String, output_path: Option<String>, indent: usize) -> String {
+    let actual_output_path = output_path.unwrap_or(
+        Path::new(&input_path)
+            .with_extension("html")
+            .to_str()
+            .unwrap()
+            .to_owned(),
+    );
+    let ast = read_file_into_ast(&input_path);
+    write_html_to_file(&actual_output_path, ast, indent);
+    actual_output_path
 }

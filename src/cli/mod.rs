@@ -7,7 +7,7 @@ pub enum Command {
         #[arg(help = "Path to .ytml file")]
         input_file: String,
         #[arg(help = "Path to .html file")]
-        output_file: String,
+        output_file: Option<String>,
         #[arg(default_value_t = 2, long)]
         indent: u8,
     },
@@ -15,7 +15,7 @@ pub enum Command {
         #[arg(help = "Path to .ytml file")]
         input_file: String,
         #[arg(help = "Path to .html file")]
-        output_file: String,
+        output_file: Option<String>,
         #[arg(default_value_t = 2, long)]
         indent: u8,
     },

@@ -76,4 +76,4 @@ You can watch for file changes and compile automatically with the watch mode:
 
 You can also pass a directory path, so all .ytml files within the specified directory will be observed and compiled as well
 
-🚧 File edits changes with by vim, neovim, and other text-based editors currently can't be observed 🚧
+🚧 File changes made by vim, neovim, and other text-based editors currently can't be observed 🚧

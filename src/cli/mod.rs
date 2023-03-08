@@ -1,4 +1,4 @@
-use clap::{Parser,Subcommand};
+use clap::{Parser, Subcommand};
 
 #[derive(Subcommand)]
 pub enum Command {
@@ -10,11 +10,19 @@ pub enum Command {
         output_file: String,
         #[arg(default_value_t = 2, long)]
         indent: u8,
-    }
+    },
+    Watch {
+        #[arg(help = "Path to .ytml file")]
+        input_file: String,
+        #[arg(help = "Path to .html file")]
+        output_file: String,
+        #[arg(default_value_t = 2, long)]
+        indent: u8,
+    },
 }
 
 #[derive(Parser)]
 pub struct Cli {
     #[command(subcommand)]
-    pub command: Command, 
+    pub command: Command,
 }

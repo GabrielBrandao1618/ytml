@@ -24,7 +24,8 @@ fn main() -> notify::Result<()> {
             output_file,
             indent,
         } => {
-            compile_ytml_file(input_file, output_file, indent.into());
+            let (input, out) = compile_ytml_file(input_file, output_file, indent.into());
+            println!("Compiled {in} into {out}", in = input, out = out);
             Ok(())
         }
 
@@ -62,7 +63,7 @@ fn main() -> notify::Result<()> {
                                 let input_file_paths = event.paths;
                                 for path in input_file_paths {
                                     if path.extension().unwrap() == "ytml" {
-                                        let out = compile_ytml_file(
+                                        let (_, out) = compile_ytml_file(
                                             path.to_str().unwrap().to_owned(),
                                             None,
                                             indent.into(),
@@ -83,7 +84,7 @@ fn main() -> notify::Result<()> {
     }
 }
 
-fn compile_ytml_file(input_path: String, output_path: Option<String>, indent: usize) -> String {
+fn compile_ytml_file(input_path: String, output_path: Option<String>, indent: usize) -> (String, String) {
     let actual_output_path = output_path.unwrap_or(
         Path::new(&input_path)
             .with_extension("html")
@@ -93,5 +94,5 @@ fn compile_ytml_file(input_path: String, output_path: Option<String>, indent: us
     );
     let ast = read_file_into_ast(&input_path);
     write_html_to_file(&actual_output_path, ast, indent);
-    actual_output_path
+    (input_path, actual_output_path)
 }

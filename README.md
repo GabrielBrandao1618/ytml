@@ -28,6 +28,31 @@ html(lang = "pt-br"){
 }
 ```
 
+Also, with the multiply operator(\*), you can avoid repetition, so
+
+```html
+<html>
+  <body>
+    <p>Hello!</p>
+    <p>Hello!</p>
+    <p>Hello!</p>
+    <p>Hello!</p>
+  </body>
+</html>
+```
+
+Can be wrote this way
+
+```
+html {
+  body {
+    p*4 {
+      Hello!
+    }
+  }
+}
+```
+
 ## Usage
 
 Here is how you can compile a ytml file into html

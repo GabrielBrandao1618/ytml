@@ -6,7 +6,8 @@ prop_value =  { string }
 tag_props  =  { "(" ~ tag_prop+ ~ ")" }
 tag_prop   =  { prop_name ~ "=" ~ prop_value }
 tag_inner  =  { tag+ | text }
-tag_multiplier = { "*" ~ ASCII_DIGIT+}
+tag_multiplier_number = {ASCII_DIGIT+}
+tag_multiplier = { "*" ~ tag_multiplier_number}
 tag_class = {"." ~ text}
 tag_id = {"#" ~ text}
 tag_modifier = _{ tag_multiplier | tag_class | tag_id }

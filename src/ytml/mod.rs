@@ -18,8 +18,8 @@ pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
         match tag.as_rule() {
             Rule::EOI => break,
             Rule::tag => {
-                let unwrapped_tags = ytml_tag_to_ast(tag);
-                doc_root_tags.push(unwrapped_tags);
+                let mut unwrapped_tags = ytml_tag_to_ast(tag);
+                doc_root_tags.append(&mut unwrapped_tags);
             }
             _ => unreachable!(),
         }
@@ -27,7 +27,9 @@ pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
     doc_root_tags
 }
 
-pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
+pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
+    let mut multiplier = 1;
+    let mut tags = vec![];
     let mut initial_tag = Tag {
         name: String::new(),
         attributes: HashMap::new(),
@@ -49,10 +51,10 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
                 for inner_element in tag_component.into_inner() {
                     match inner_element.as_rule() {
                         Rule::tag => {
-                            let unwrapped_tag = ytml_tag_to_ast(inner_element);
-                            initial_tag
-                                .inner
-                                .push(TagInnerElement::Tag { tag: unwrapped_tag });
+                            let unwrapped_tags = ytml_tag_to_ast(inner_element);
+                            for unwraped_tag in unwrapped_tags.into_iter() {
+                                initial_tag.inner.push(TagInnerElement::Tag { tag: unwraped_tag });
+                            }
                         }
                         Rule::text => initial_tag.inner.push(TagInnerElement::Text {
                             content: inner_element.as_str().to_owned(),
@@ -62,7 +64,8 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
                 }
             }
             Rule::tag_multiplier => {
-                println!("TODO: multiplier operator");
+                let new_multiplier: u32 = tag_component.into_inner().next().unwrap().as_str().parse::<u32>().unwrap();
+                multiplier = new_multiplier;
             }
             Rule::tag_class => {
                 let class_name = tag_component.into_inner().next().unwrap().as_str();
@@ -85,7 +88,10 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Tag {
             _ => unreachable!("Did not match: {:#?}", tag_component.as_rule()),
         }
     }
-    initial_tag
+    for _ in 1..=multiplier {
+        tags.push(initial_tag.clone());
+    }
+    tags
 }
 
 fn unwrap_tag_prop(prop: Pair<Rule>) -> (String, String) {
@@ -97,7 +103,15 @@ fn unwrap_tag_prop(prop: Pair<Rule>) -> (String, String) {
                 prop_name = component.as_str().to_owned();
             }
             Rule::prop_value => {
-                let val = component.clone().into_inner().next().unwrap().into_inner().next().unwrap().as_str();
+                let val = component
+                    .clone()
+                    .into_inner()
+                    .next()
+                    .unwrap()
+                    .into_inner()
+                    .next()
+                    .unwrap()
+                    .as_str();
                 prop_value = val.to_owned();
             }
             _ => unreachable!(),

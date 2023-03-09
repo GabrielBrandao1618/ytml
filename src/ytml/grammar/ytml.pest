@@ -1,13 +1,13 @@
-text       =  { (ASCII_ALPHANUMERIC | "-" | "!" | "_")+ }
+text       =  { (ASCII_ALPHANUMERIC | "-" | "!" | "_" | "@" | "&")+ }
+number     =  { ASCII_DIGIT+ }
 string     = ${ "\"" ~ text ~ "\"" }
-tag_name   =  { text }
+tag_name   =  { (ASCII_ALPHA | "-" | "_")+ }
 prop_name  =  { text }
 prop_value =  { string }
 tag_props  =  { "(" ~ tag_prop+ ~ ")" }
 tag_prop   =  { prop_name ~ "=" ~ prop_value }
 tag_inner  =  { tag+ | text }
-tag_multiplier_number = {ASCII_DIGIT+}
-tag_multiplier = { "*" ~ tag_multiplier_number}
+tag_multiplier = { "*" ~ number}
 tag_class = {"." ~ text}
 tag_id = {"#" ~ text}
 tag_modifier = _{ tag_multiplier | tag_class | tag_id }

@@ -1,17 +1,18 @@
-text       =  { (ASCII_ALPHANUMERIC | "-" | "!" | "_" | "@" | "&")+ }
-number     =  { ASCII_DIGIT+ }
-string     = ${ "\"" ~ text ~ "\"" }
-tag_name   =  { (ASCII_ALPHA | "-" | "_")+ }
-prop_name  =  { text }
-prop_value =  { string }
-tag_props  =  { "(" ~ tag_prop+ ~ ")" }
-tag_prop   =  { prop_name ~ "=" ~ prop_value }
-tag_inner  =  { tag+ | text }
-tag_multiplier = { "*" ~ number}
-tag_class = {"." ~ text}
-tag_id = {"#" ~ text}
-tag_modifier = _{ tag_multiplier | tag_class | tag_id }
-tag        =  { tag_name ~ tag_modifier* ~ tag_props? ~ "{" ~ tag_inner? ~ "}" }
+text                    =  { (!("{" | "}" | "\"") ~ ANY)+ }
+int                     = @{ ASCII_DIGIT+ }
+string                  = ${ "\"" ~ text ~ "\"" }
+tag_name                = @{ (ASCII_ALPHA | "-" | "_")+ }
+prop_name               = @{ (ASCII_ALPHA | "-" | "_")+ }
+prop_value              =  { string }
+tag_props               =  { "(" ~ tag_prop+ ~ ")" }
+tag_prop                =  { prop_name ~ "=" ~ prop_value }
+tag_inner               =  { tag+ | text }
+tag_multiplier          =  { "*" ~ int }
+tag_shortcut_prop_value =  { (ASCII_ALPHA | "-" | "_")+ }
+tag_class               =  { "." ~ tag_shortcut_prop_value }
+tag_id                  =  { "#" ~ tag_shortcut_prop_value }
+tag_modifier            = _{ tag_multiplier | tag_class | tag_id }
+tag                     =  { tag_name ~ tag_modifier* ~ tag_props? ~ "{" ~ tag_inner? ~ "}" }
 
 doc = { SOI ~ tag* ~ EOI }
 

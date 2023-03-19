@@ -5,6 +5,7 @@ pub fn ast_to_html(ast: Vec<Tag>, indent: usize) -> String {
 
     for root_tag in ast.iter() {
         let html_tag = ast_tag_to_html(root_tag, 0, indent);
+        html_content.push_str("<!DOCTYPE html>\n");
         html_content.push_str(&format!("{}\n", html_tag));
     }
 

@@ -5,6 +5,7 @@ pub fn ast_to_html(ast: Vec<Tag>, indent: usize) -> String {
 
     for root_tag in ast.iter() {
         let html_tag = ast_tag_to_html(root_tag, 0, indent);
+        html_content.push_str("<!DOCTYPE html>\n");
         html_content.push_str(&format!("{}\n", html_tag));
     }
 
@@ -13,11 +14,14 @@ pub fn ast_to_html(ast: Vec<Tag>, indent: usize) -> String {
 
 pub fn ast_tag_to_html(ast: &Tag, indent_level: usize, indent: usize) -> String {
     let mut tag_content = String::new();
-    let mut attributes_rep = String::new();
 
-    for (key, val) in ast.attributes.iter() {
-        attributes_rep.push_str(&format!("{attribute} = \"{val}\" ", attribute = key, val = val));
-    }
+    let attributes_rep: String = ast
+        .attributes
+        .iter()
+        .map(|(key, val)| format!("{}=\"{}\"", key, val))
+        .collect::<Vec<String>>()
+        .join(" ");
+
     tag_content.push_str(&format!(
         "{indent}<{tagname} {attributes_rep}>",
         tagname = ast.name,

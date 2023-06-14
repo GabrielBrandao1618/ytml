@@ -3,8 +3,8 @@ use std::fmt;
 
 #[derive(Clone)]
 pub enum TagInnerElement {
-    Tag { tag: Tag },
-    Text { content: String },
+    Tag(Tag),
+    Text(String),
 }
 
 #[derive(Clone)]
@@ -24,11 +24,11 @@ impl fmt::Display for Tag {
         let mut inner_rep = String::new();
         for inner in &self.inner {
             match inner {
-                TagInnerElement::Tag { tag } => {
+                TagInnerElement::Tag(tag) => {
                     let unwraped_inner = format!("{}", tag);
                     inner_rep.push_str(&unwraped_inner);
                 }
-                TagInnerElement::Text { content } => {
+                TagInnerElement::Text(content) => {
                     let unwraped_inner = format!("{}", content);
                     inner_rep.push_str(&unwraped_inner);
                 }

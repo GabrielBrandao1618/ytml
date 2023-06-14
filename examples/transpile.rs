@@ -2,7 +2,7 @@ extern crate ytml;
 
 use std::collections::HashMap;
 
-use ytml::ast::Tag;
+use ytml::tokens::Tag;
 use ytml::html::ast_tag_to_html;
 
 fn main() {

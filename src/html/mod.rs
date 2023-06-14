@@ -1,4 +1,4 @@
-use super::ast::{Tag, TagInnerElement};
+use super::tokens::{Tag, TagInnerElement};
 
 pub fn ast_to_html(ast: Vec<Tag>, indent: usize) -> String {
     let mut html_content = String::new();

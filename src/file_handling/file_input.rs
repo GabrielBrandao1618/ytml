@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 
-use crate::ast::Tag;
+use crate::tokens::Tag;
 use crate::ytml::ytml_doc_to_ast;
 
 pub fn read_file_into_ast(file_path: &str) -> Vec<Tag> {

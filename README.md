@@ -75,7 +75,7 @@ fn main() {
 }
 ```
 
-Read ytml code into tag:
+Read ytml code into tag(enable `file-handling` feature):
 
 ```rust
 use ytml::file_handling::file_input::read_file_into_ast;
@@ -89,7 +89,7 @@ fn main() {
 }
 ```
 
-Write html code:
+Write html code(enable `file-handling` feature):
 
 ```rust
 use std::collections::HashMap;
@@ -132,7 +132,7 @@ fn main() {
 }
 ```
 
-Using file paths only:
+Using file paths only(enable `file-handling` feature):
 
 ```rust
 use ytml::file_handling::parse_ytml_file;

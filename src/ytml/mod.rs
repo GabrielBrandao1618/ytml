@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pest::{iterators::Pair, Parser};
 
-use crate::ast::{Tag, TagInnerElement};
+use crate::{Tag, TagInnerElement};
 
 #[derive(pest_derive::Parser)]
 #[grammar = "ytml/grammar/ytml.pest"]
@@ -53,18 +53,24 @@ pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
                         Rule::tag => {
                             let unwrapped_tags = ytml_tag_to_ast(inner_element);
                             for unwraped_tag in unwrapped_tags.into_iter() {
-                                initial_tag.inner.push(TagInnerElement::Tag { tag: unwraped_tag });
+                                initial_tag.inner.push(TagInnerElement::Tag(unwraped_tag));
                             }
                         }
-                        Rule::text => initial_tag.inner.push(TagInnerElement::Text {
-                            content: inner_element.as_str().to_owned(),
-                        }),
+                        Rule::text => initial_tag
+                            .inner
+                            .push(TagInnerElement::Text(inner_element.as_str().to_owned())),
                         _ => unreachable!(),
                     }
                 }
             }
             Rule::tag_multiplier => {
-                let new_multiplier: u32 = tag_component.into_inner().next().unwrap().as_str().parse::<u32>().unwrap();
+                let new_multiplier: u32 = tag_component
+                    .into_inner()
+                    .next()
+                    .unwrap()
+                    .as_str()
+                    .parse::<u32>()
+                    .unwrap();
                 multiplier = new_multiplier;
             }
             Rule::tag_class => {

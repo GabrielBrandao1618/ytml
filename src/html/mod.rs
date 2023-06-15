@@ -1,4 +1,4 @@
-use super::ast::{Tag, TagInnerElement};
+use super::{Tag, TagInnerElement};
 
 pub fn ast_to_html(ast: Vec<Tag>, indent: usize) -> String {
     let mut html_content = String::new();
@@ -29,13 +29,13 @@ pub fn ast_tag_to_html(ast: &Tag, indent_level: usize, indent: usize) -> String 
     ));
     for child in &ast.inner {
         match child {
-            TagInnerElement::Tag { tag } => {
+            TagInnerElement::Tag(tag) => {
                 tag_content.push_str(&format!(
                     "\n{html}",
                     html = &ast_tag_to_html(tag, indent_level + indent, indent),
                 ));
             }
-            TagInnerElement::Text { content } => tag_content.push_str(&format!(
+            TagInnerElement::Text(content) => tag_content.push_str(&format!(
                 "\n{indent}{content}",
                 content = content,
                 indent = String::from(" ".repeat(indent_level + indent))

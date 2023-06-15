@@ -2,20 +2,21 @@ extern crate ytml;
 
 use std::collections::HashMap;
 
-use ytml::ast::{Tag, TagInnerElement};
+use ytml::{Tag, TagInnerElement};
 
 fn main() {
-    let p = Tag{
+    let p = Tag {
         attributes: HashMap::new(),
         name: String::from("p"),
-        inner: vec![TagInnerElement::Text { content: String::from("This is a paragraph") }]
+        inner: vec![TagInnerElement::Text(String::from("This is a paragraph"))],
     };
     println!("{}", p);
 
-    let div = Tag{
+    let div = Tag {
         attributes: HashMap::new(),
         name: String::from("div"),
-        inner: vec![TagInnerElement::Tag { tag: p }]
+        inner: vec![TagInnerElement::Tag(p)],
     };
     println!("{}", div);
 }
+

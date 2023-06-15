@@ -58,7 +58,7 @@ html {
 Create a tag:
 
 ```rust
-use ytml::ast::Tag;
+use ytml::Tag;
 use ytml::html::ast_tag_to_html;
 
 fn main() {
@@ -93,7 +93,7 @@ Write html code:
 
 ```rust
 use std::collections::HashMap;
-use ytml::{file_handling::file_output::write_html_to_file, ast::Tag};
+use ytml::{file_handling::file_output::write_html_to_file, Tag};
 
 fn main() {
   let document = vec![
@@ -113,20 +113,20 @@ Define tag with a inner content:
 ```rust
 use std::collections::HashMap;
 
-use ytml::ast::{Tag, TagInnerElement};
+use ytml::{Tag, TagInnerElement};
 
 fn main() {
     let p = Tag{
         attributes: HashMap::new(),
         name: String::from("p"),
-        inner: vec![TagInnerElement::Text { content: String::from("This is a paragraph") }]
+        inner: vec![TagInnerElement::Text(String::from("This is a paragraph"))]
     };
     println!("{}", p);
 
     let div = Tag{
         attributes: HashMap::new(),
         name: String::from("div"),
-        inner: vec![TagInnerElement::Tag { tag: p }]
+        inner: vec![TagInnerElement::Tag(p)]
     };
     println!("{}", div);
 }
@@ -135,12 +135,12 @@ fn main() {
 Using file paths only:
 
 ```rust
-use ytml::file_handling::compile_ytml_file;
+use ytml::file_handling::parse_ytml_file;
 
 fn main() {
     let ytml_file_path = String::from("./index.ytml");
     let html_file_path = String::from("./out.html");
     let indent = 2;
-    compile_ytml_file(ytml_file_path, Some(html_file_path), indent);
+    parse_ytml_file(ytml_file_path, Some(html_file_path), indent);
 }
 ```

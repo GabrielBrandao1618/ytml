@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 
-use crate::ast::Tag;
+use crate::Tag;
 use crate::html::ast_to_html;
 
 pub fn write_html_to_file(file_path: &str, ast: Vec<Tag>, indent: usize) {

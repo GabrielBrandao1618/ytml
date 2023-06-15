@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pest::{iterators::Pair, Parser};
 
-use crate::tokens::{Tag, TagInnerElement};
+use crate::{Tag, TagInnerElement};
 
 #[derive(pest_derive::Parser)]
 #[grammar = "ytml/grammar/ytml.pest"]

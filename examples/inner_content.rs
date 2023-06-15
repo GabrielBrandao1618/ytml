@@ -2,7 +2,7 @@ extern crate ytml;
 
 use std::collections::HashMap;
 
-use ytml::tokens::{Tag, TagInnerElement};
+use ytml::{Tag, TagInnerElement};
 
 fn main() {
     let p = Tag {

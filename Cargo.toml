@@ -5,6 +5,21 @@ edition = "2021"
 description = "A markup language that offers a different syntax to html"
 license = "MIT"
 
+[features]
+file-handling = []
+
+[[example]]
+name = "read_file"
+required-features = ["file-handling"]
+
+[[example]]
+name = "using_file_paths"
+required-features = ["file-handling"]
+
+[[example]]
+name = "write_html"
+required-features = ["file-handling"]
+
 [dependencies]
 pest = "2.5.5"
 pest_derive = "2.5.5"

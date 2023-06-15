@@ -8,4 +8,3 @@ fn main() {
     let indent = 2;
     parse_ytml_file(ytml_file_path, Some(html_file_path), indent);
 }
-

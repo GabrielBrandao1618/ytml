@@ -58,7 +58,7 @@ html {
 Create a tag:
 
 ```rust
-use ytml::tokens::Tag;
+use ytml::Tag;
 use ytml::html::ast_tag_to_html;
 
 fn main() {
@@ -93,7 +93,7 @@ Write html code:
 
 ```rust
 use std::collections::HashMap;
-use ytml::{file_handling::file_output::write_html_to_file, tokens::Tag};
+use ytml::{file_handling::file_output::write_html_to_file, Tag};
 
 fn main() {
   let document = vec![
@@ -113,7 +113,7 @@ Define tag with a inner content:
 ```rust
 use std::collections::HashMap;
 
-use ytml::tokens::{Tag, TagInnerElement};
+use ytml::{Tag, TagInnerElement};
 
 fn main() {
     let p = Tag{

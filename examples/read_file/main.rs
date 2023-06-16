@@ -1,6 +1,6 @@
 extern crate ytml;
 
-use ytml::fs::file_input::read_file_into_ast;
+use ytml::file_handling::file_input::read_file_into_ast;
 
 fn main() {
     let file_path = "./index.ytml";

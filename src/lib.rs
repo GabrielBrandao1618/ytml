@@ -1,5 +1,5 @@
-#[cfg(feature = "fs")]
-pub mod fs;
+#[cfg(feature = "file-handling")]
+pub mod file_handling;
 pub mod html;
 pub mod ytml;
 

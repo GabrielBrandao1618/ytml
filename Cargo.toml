@@ -1,6 +1,7 @@
 [package]
 name = "ytml"
 version = "0.2.1"
+
 edition = "2021"
 description = "A markup language that offers a different syntax to html"
 license = "MIT"
@@ -10,15 +11,15 @@ fs = []
 
 [[example]]
 name = "read_file"
-required-features = ["fs"]
+required-features = ["file-handling"]
 
 [[example]]
 name = "using_file_paths"
-required-features = ["fs"]
+required-features = ["file-handling"]
 
 [[example]]
 name = "write_html"
-required-features = ["fs"]
+required-features = ["file-handling"]
 
 [dependencies]
 pest = "2.5.5"

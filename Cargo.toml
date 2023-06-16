@@ -1,12 +1,13 @@
 [package]
 name = "ytml"
-version = "0.1.3"
+version = "0.2.1"
+
 edition = "2021"
 description = "A markup language that offers a different syntax to html"
 license = "MIT"
 
 [features]
-file-handling = []
+fs = []
 
 [[example]]
 name = "read_file"

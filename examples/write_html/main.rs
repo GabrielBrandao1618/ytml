@@ -1,7 +1,7 @@
 extern crate ytml;
 
 use std::collections::HashMap;
-use ytml::{file_handling::file_output::write_html_to_file, Tag};
+use ytml::{fs::file_output::write_html_to_file, Tag};
 
 fn main() {
     let document = vec![Tag {

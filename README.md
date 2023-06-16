@@ -75,10 +75,10 @@ fn main() {
 }
 ```
 
-Read ytml code into tag(enable `file-handling` feature):
+Read ytml code into tag(enable `fs` feature):
 
 ```rust
-use ytml::file_handling::file_input::read_file_into_ast;
+use ytml::fs::file_input::read_file_into_ast;
 
 fn main() {
   let file_path = "./index.ytml";
@@ -89,11 +89,11 @@ fn main() {
 }
 ```
 
-Write html code(enable `file-handling` feature):
+Write html code(enable `fs` feature):
 
 ```rust
 use std::collections::HashMap;
-use ytml::{file_handling::file_output::write_html_to_file, Tag};
+use ytml::{fs::file_output::write_html_to_file, Tag};
 
 fn main() {
   let document = vec![
@@ -132,10 +132,10 @@ fn main() {
 }
 ```
 
-Using file paths only(enable `file-handling` feature):
+Using file paths only(enable `fs` feature):
 
 ```rust
-use ytml::file_handling::parse_ytml_file;
+use ytml::fs::parse_ytml_file;
 
 fn main() {
     let ytml_file_path = String::from("./index.ytml");

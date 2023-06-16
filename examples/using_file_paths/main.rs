@@ -1,6 +1,6 @@
 extern crate ytml;
 
-use ytml::file_handling::parse_ytml_file;
+use ytml::fs::parse_ytml_file;
 
 fn main() {
     let ytml_file_path = String::from("./index.ytml");

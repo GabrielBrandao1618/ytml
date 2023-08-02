@@ -1,6 +1,6 @@
 [package]
 name = "ytml"
-version = "0.2.3"
+version = "0.1.0"
 
 edition = "2021"
 description = "A markup language that offers a different syntax to html"
@@ -14,6 +14,7 @@ ytml-lang = {path = "packages/ytml-lang", features = ["fs"] }
 [workspace]
 members = [
   "packages/ytml-lang",
+  "packages/ytml-cli",
   "examples/inner-content",
   "examples/read-file"
 ]

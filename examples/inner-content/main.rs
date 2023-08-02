@@ -1,8 +1,6 @@
-extern crate ytml;
+use ytml_lang::{TagInnerElement, Tag};
 
 use std::collections::HashMap;
-
-use ytml::{Tag, TagInnerElement};
 
 fn main() {
     let p = Tag {

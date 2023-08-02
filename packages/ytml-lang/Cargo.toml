@@ -1,0 +1,11 @@
+[package]
+name = "ytml-lang"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pest = "2.7.2"
+pest_derive = "2.7.2"
+
+[features]
+fs = []

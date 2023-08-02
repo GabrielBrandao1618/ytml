@@ -1,26 +1,23 @@
 [package]
 name = "ytml"
-version = "0.2.3"
+version = "0.1.0"
 
 edition = "2021"
 description = "A markup language that offers a different syntax to html"
 license = "MIT"
 
-[features]
-fs = []
-
-[[example]]
-name = "read_file"
-required-features = ["fs"]
-
-[[example]]
-name = "using_file_paths"
-required-features = ["fs"]
-
-[[example]]
-name = "write_html"
-required-features = ["fs"]
+publish = false
 
 [dependencies]
-pest = "2.5.5"
-pest_derive = "2.5.5"
+ytml-lang = {path = "packages/ytml-lang", features = ["fs"] }
+
+[workspace]
+members = [
+  "packages/ytml-lang",
+  "packages/ytml-cli",
+  "examples/inner-content",
+  "examples/read-file"
+]
+
+[workspace.dependencies]
+ytml-lang = {path = "packages/ytml-lang", features = ["fs"] }

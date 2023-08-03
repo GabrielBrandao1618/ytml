@@ -4,7 +4,7 @@ A brand new markup language
 
 ## How it works
 
-It works like Typescript, which is transpiled into Javascript. ytml files can be transpiled into html
+It works like Typescript, which is compiled into Javascript. ytml files can be compiled into html
 
 ## Syntax
 
@@ -55,92 +55,25 @@ html {
 
 ## Usage
 
-Create a tag:
+Here is how you can compile a ytml file into html
 
-```rust
-use ytml::Tag;
-use ytml::html::ast_tag_to_html;
+`ytml parse <INPUT_FILE> [OUTPUT_FILE]`
 
-fn main() {
-  let tag = Tag {
-    name: String::from("html"),
-    attributes: HashMap::new(),
-    inner: Vec::new(),
-  };
-  let indent = 2; // The indentation
-  let indent_start = 0; // The initial indentation
-  let html_output = ast_tag_to_html(&tag, indent_start, indent);
-  println!("{}", html_output);
-  // <html></html>
-}
-```
+Where
 
-Read ytml code into tag(enable `fs` feature):
+- INPUT_FILE is the path to the .ytml file you want to compile into html
+- OUTPUT_FILE is the path to the .html file you want the ytml to be compiled into
 
-```rust
-use ytml::fs::file_input::read_file_into_ast;
+OUTPUT_FILE is optional, the program will use the INPUT_FILE name as the output file name by default
 
-fn main() {
-  let file_path = "./index.ytml";
-  let tags = read_file_into_ast(file_path);
-  for tag in tags {
-      println!("{}", tag);
-  }
-}
-```
+The indentation is 2 by default, but you can pass a custom indentation with the --indent flag:
 
-Write html code(enable `fs` feature):
+`ytml parse in.ytml out.html --indent 4`
 
-```rust
-use std::collections::HashMap;
-use ytml::{fs::file_output::write_html_to_file, Tag};
+You can watch for file changes and compile automatically with the watch mode:
 
-fn main() {
-  let document = vec![
-    Tag{
-      attributes: HashMap::new(),
-      inner: Vec::new(),
-      name: String::from("html"),
-    }
-  ];
-  let file_path = "./out.html";
-  write_html_to_file(file_path, document, 2);
-}
-```
+`ytml watch in.ytml out.html`
 
-Define tag with a inner content:
+You can also pass a directory path, so all .ytml files within the specified directory will be observed and compiled as well
 
-```rust
-use std::collections::HashMap;
-
-use ytml::{Tag, TagInnerElement};
-
-fn main() {
-    let p = Tag{
-        attributes: HashMap::new(),
-        name: String::from("p"),
-        inner: vec![TagInnerElement::Text(String::from("This is a paragraph"))]
-    };
-    println!("{}", p);
-
-    let div = Tag{
-        attributes: HashMap::new(),
-        name: String::from("div"),
-        inner: vec![TagInnerElement::Tag(p)]
-    };
-    println!("{}", div);
-}
-```
-
-Using file paths only(enable `fs` feature):
-
-```rust
-use ytml::fs::parse_ytml_file;
-
-fn main() {
-    let ytml_file_path = String::from("./index.ytml");
-    let html_file_path = String::from("./out.html");
-    let indent = 2;
-    parse_ytml_file(ytml_file_path, Some(html_file_path), indent);
-}
-```
+🚧 File changes made by vim, neovim, and other text-based editors currently can't be observed 🚧

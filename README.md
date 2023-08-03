@@ -2,6 +2,8 @@
 
 A brand new markup language
 
+🚧 This is not meant to be used in production 🚧
+
 ## How it works
 
 It works like Typescript, which is compiled into Javascript. ytml files can be compiled into html

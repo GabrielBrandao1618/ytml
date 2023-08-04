@@ -21,3 +21,11 @@ members = [
 
 [workspace.dependencies]
 ytml-lang = {path = "packages/ytml-lang", features = ["fs"] }
+
+# Benchmark settings
+[dev-dependencies]
+criterion = {version = "0.5.1", features = ["html_reports"]}
+
+[[bench]]
+name = "lang_bench"
+harness = false

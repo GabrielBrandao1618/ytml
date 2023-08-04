@@ -9,7 +9,7 @@ license = "MIT"
 publish = false
 
 [dependencies]
-ytml-lang = {path = "packages/ytml-lang", features = ["fs"] }
+ytml-lang = {path = "packages/ytml-lang", features = ["fs", "display"] }
 
 [workspace]
 members = [

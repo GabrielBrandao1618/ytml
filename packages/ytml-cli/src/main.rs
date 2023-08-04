@@ -72,4 +72,3 @@ fn main() -> notify::Result<()> {
         }
     }
 }
-

@@ -1,3 +1,5 @@
+![ytml-logo](https://github.com/GabrielBrandao1618/ytml/assets/62272513/972fef9e-9cbb-45a9-9c54-0db00a76a18a)
+
 # YTML
 
 A brand new markup language

@@ -1,4 +1,5 @@
-![ytml-logo](https://github.com/GabrielBrandao1618/ytml/assets/62272513/972fef9e-9cbb-45a9-9c54-0db00a76a18a)
+
+![ytml-logo](https://github.com/GabrielBrandao1618/ytml/assets/62272513/cace3346-8d7f-4497-a1c8-c6b8b31d9fb5)
 
 # YTML
 

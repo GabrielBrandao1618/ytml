@@ -6,7 +6,7 @@ use crate::tokens::{Tag, TagInnerElement};
 
 #[derive(pest_derive::Parser)]
 #[grammar = "ytml/grammar/ytml.pest"]
-pub struct YtmlParser {}
+struct YtmlParser {}
 
 pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
     // Store all doc's root tags and then return it
@@ -27,7 +27,7 @@ pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
     doc_root_tags
 }
 
-pub fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
+fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
     let mut multiplier = 1;
     let mut tags = vec![];
     let mut initial_tag = Tag {
@@ -132,17 +132,18 @@ mod tests {
     #[test]
     fn test_parse() {
         let raw_ytml =
-            "html(lang = \"pt-br\"){ } body.container#unique(color = \"blue\"){p(color=\"red\"){content}}";
+            "html(lang = \"pt-br\"){ } body.container1#unique2(color = \"blue\"){p(color=\"red\"){content}}";
         let ast = ytml_doc_to_ast(raw_ytml);
         let root = ast.iter().nth(0).unwrap();
-        root.attributes.get(&String::from("lang")).unwrap();
+        let lang = root.attributes.get("lang").unwrap();
+        assert_eq!(lang, "pt-br");
 
         let body = ast.iter().nth(1).unwrap();
         // Ensure that both class and id properties was persed sucessfully
-        let body_class = body.attributes.get(&String::from("class")).unwrap();
-        let body_id = body.attributes.get(&String::from("id")).unwrap();
+        let body_class = body.attributes.get("class").unwrap();
+        let body_id = body.attributes.get("id").unwrap();
 
-        assert_eq!(body_class, &String::from("container"));
-        assert_eq!(body_id, &String::from("unique"));
+        assert_eq!(body_class, &String::from("container1"));
+        assert_eq!(body_id, &String::from("unique2"));
     }
 }

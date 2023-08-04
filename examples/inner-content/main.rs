@@ -1,4 +1,4 @@
-use ytml_lang::{TagInnerElement, Tag};
+use ytml_lang::tokens::{TagInnerElement, Tag};
 
 use std::collections::HashMap;
 

@@ -11,9 +11,9 @@ struct YtmlParser {}
 pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
     // Store all doc's root tags and then return it
     let mut doc_root_tags: Vec<Tag> = vec![];
-    let mut pairs = YtmlParser::parse(Rule::doc, input).unwrap();
+    let mut pairs = YtmlParser::parse(Rule::doc, input).expect("Syntax error");
 
-    let tags = pairs.next().unwrap().into_inner();
+    let tags = pairs.next().expect("Syntax error").into_inner();
     for tag in tags {
         match tag.as_rule() {
             Rule::EOI => break,
@@ -74,7 +74,11 @@ fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
                 multiplier = new_multiplier;
             }
             Rule::tag_class => {
-                let class_name = tag_component.into_inner().next().unwrap().as_str();
+                let class_name = tag_component
+                    .into_inner()
+                    .next()
+                    .expect("Error: could not find class name")
+                    .as_str();
                 let mut full_classname = String::new();
                 match initial_tag.attributes.get("class") {
                     Some(val) => full_classname = val.to_owned(),
@@ -86,7 +90,11 @@ fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
                     .insert(String::from("class"), full_classname);
             }
             Rule::tag_id => {
-                let id = tag_component.into_inner().next().unwrap().as_str();
+                let id = tag_component
+                    .into_inner()
+                    .next()
+                    .expect("Error: could not find id value")
+                    .as_str();
                 initial_tag
                     .attributes
                     .insert(String::from("id"), format!("{}", id.to_owned()));

@@ -43,7 +43,7 @@ fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
             }
             Rule::tag_props => {
                 for prop in tag_component.into_inner() {
-                    let (prop_name, prop_val) = unwrap_tag_prop(prop);
+                    let (prop_name, prop_val) = parse_tag_prop(prop.as_str());
                     initial_tag.attributes.insert(prop_name, prop_val);
                 }
             }
@@ -108,35 +108,37 @@ fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
     tags
 }
 
-fn unwrap_tag_prop(prop: Pair<Rule>) -> (String, String) {
-    let mut prop_name = String::new();
-    let mut prop_value = String::new();
-    for component in prop.into_inner() {
-        match component.as_rule() {
-            Rule::prop_name => {
-                prop_name = component.as_str().to_owned();
-            }
-            Rule::prop_value => {
-                let val = component
-                    .clone()
-                    .into_inner()
-                    .next()
-                    .unwrap()
-                    .into_inner()
-                    .next()
-                    .unwrap()
-                    .as_str();
-                prop_value = val.to_owned();
-            }
-            _ => unreachable!(),
-        }
-    }
-    (prop_name, prop_value)
+pub fn parse_tag_prop(input: &str) -> (String, String) {
+    let ast = YtmlParser::parse(Rule::tag_prop, input)
+        .unwrap()
+        .next()
+        .unwrap();
+    let mut inner_ast = ast.into_inner();
+    let ast_prop_name = inner_ast.next().unwrap();
+    let parsed_prop_name = ast_prop_name.as_str().to_owned();
+
+    let ast_prop_value = inner_ast.next().unwrap();
+    let parsed_prop_value = ast_prop_value
+        .into_inner()
+        .next()
+        .unwrap()
+        .into_inner()
+        .next()
+        .unwrap()
+        .as_str()
+        .to_owned();
+
+    (parsed_prop_name, parsed_prop_value)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn test_parse_prop() {
+        let parsed = parse_tag_prop("color = \"red\"");
+        assert_eq!(parsed, ("color".to_owned(), "red".to_owned()));
+    }
     #[test]
     fn test_parse() {
         let raw_ytml =

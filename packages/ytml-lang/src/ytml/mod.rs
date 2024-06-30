@@ -35,14 +35,23 @@ fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
         attributes: HashMap::new(),
         inner: vec![],
     };
-    for tag_component in tag.into_inner() {
+    let mut tag_inner = tag.into_inner();
+    let ast_tag_name = tag_inner.next().unwrap();
+    let parsed_tag_name = ast_tag_name.as_str().to_owned();
+    initial_tag.name = parsed_tag_name;
+
+    let ast_tag_modifiers = tag_inner.next().unwrap();
+    let parsed_modifiers = parse_tag_modifiers(ast_tag_modifiers.as_str());
+    for (name, value) in parsed_modifiers {
+        initial_tag.attributes.insert(name, value);
+    }
+
+    for tag_component in tag_inner {
         match tag_component.as_rule() {
-            Rule::EOI => break,
-            Rule::tag_name => {
-                initial_tag.name = tag_component.as_str().to_owned();
-            }
             Rule::tag_props => {
-                initial_tag.attributes = parse_tag_props(tag_component.as_str());
+                for (name, value) in parse_tag_props(tag_component.as_str()) {
+                    initial_tag.attributes.insert(name, value);
+                }
             }
             Rule::tag_inner => {
                 for inner_element in tag_component.into_inner() {
@@ -59,42 +68,6 @@ fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
                         _ => unreachable!(),
                     }
                 }
-            }
-            Rule::tag_multiplier => {
-                let new_multiplier: u32 = tag_component
-                    .into_inner()
-                    .next()
-                    .unwrap()
-                    .as_str()
-                    .parse::<u32>()
-                    .unwrap();
-                multiplier = new_multiplier;
-            }
-            Rule::tag_class => {
-                let class_name = tag_component
-                    .into_inner()
-                    .next()
-                    .expect("Error: could not find class name")
-                    .as_str();
-                let mut full_classname = String::new();
-                match initial_tag.attributes.get("class") {
-                    Some(val) => full_classname = val.to_owned(),
-                    None => (),
-                }
-                full_classname.push_str(&format!("{}", class_name));
-                initial_tag
-                    .attributes
-                    .insert(String::from("class"), full_classname);
-            }
-            Rule::tag_id => {
-                let id = tag_component
-                    .into_inner()
-                    .next()
-                    .expect("Error: could not find id value")
-                    .as_str();
-                initial_tag
-                    .attributes
-                    .insert(String::from("id"), format!("{}", id.to_owned()));
             }
             _ => unreachable!("Did not match: {:#?}", tag_component.as_rule()),
         }
@@ -143,6 +116,39 @@ pub fn parse_tag_props(input: &str) -> HashMap<String, String> {
     props
 }
 
+pub fn parse_tag_modifier(input: &str) -> (String, String) {
+    let ast = YtmlParser::parse(Rule::tag_modifier, input)
+        .unwrap()
+        .next()
+        .unwrap();
+    match ast.as_rule() {
+        Rule::tag_class => {
+            let inner_class = ast.into_inner().next().unwrap();
+            ("class".to_owned(), inner_class.as_str().to_owned())
+        }
+        Rule::tag_id => {
+            let inner_class = ast.into_inner().next().unwrap();
+            ("id".to_owned(), inner_class.as_str().to_owned())
+        }
+        Rule::tag_multiplier => todo!(),
+        _ => unreachable!(),
+    }
+}
+
+pub fn parse_tag_modifiers(input: &str) -> HashMap<String, String> {
+    let mut modifiers = HashMap::new();
+    let ast = YtmlParser::parse(Rule::tag_modifiers, input)
+        .unwrap()
+        .next()
+        .unwrap();
+    for modifier in ast.into_inner() {
+        let (name, value) = parse_tag_modifier(modifier.as_str());
+        modifiers.insert(name, value);
+    }
+
+    modifiers
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -160,6 +166,23 @@ mod tests {
         assert_eq!(parsed, expected);
     }
     #[test]
+    fn test_parse_modifier() {
+        let parsed = parse_tag_modifier(".container");
+        assert_eq!(parsed, ("class".to_owned(), "container".to_owned()));
+
+        let parsed = parse_tag_modifier("#unique");
+        assert_eq!(parsed, ("id".to_owned(), "unique".to_owned()));
+    }
+    #[test]
+    fn test_parse_modifiers() {
+        let parsed = parse_tag_modifiers(".container#unique");
+        let mut expected = HashMap::new();
+        expected.insert("class".to_owned(), "container".to_owned());
+        expected.insert("id".to_owned(), "unique".to_owned());
+        assert_eq!(parsed, expected);
+    }
+
+    #[test]
     fn test_parse() {
         let raw_ytml =
             "html(lang = \"pt-br\"){ } body.container1#unique2(color = \"blue\"){p(color=\"red\"){content}}";
@@ -172,10 +195,10 @@ mod tests {
 
         let body = ast.iter().nth(1).unwrap();
         // Ensure that both class and id properties was parsed sucessfully
-        //let body_class = body.attributes.get("class").unwrap();
-        //let body_id = body.attributes.get("id").unwrap();
+        let body_class = body.attributes.get("class").unwrap();
+        let body_id = body.attributes.get("id").unwrap();
 
-        //assert_eq!(body_class, &String::from("container1"));
-        //assert_eq!(body_id, &String::from("unique2"));
+        assert_eq!(body_class, &String::from("container1"));
+        assert_eq!(body_id, &String::from("unique2"));
     }
 }

@@ -35,43 +35,27 @@ fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
         attributes: HashMap::new(),
         inner: vec![],
     };
-    let mut tag_inner = tag.into_inner();
-    let ast_tag_name = tag_inner.next().unwrap();
+    let mut ast_inner = tag.into_inner();
+    let ast_tag_name = ast_inner.next().unwrap();
     let parsed_tag_name = ast_tag_name.as_str().to_owned();
     initial_tag.name = parsed_tag_name;
 
-    let ast_tag_modifiers = tag_inner.next().unwrap();
+    let ast_tag_modifiers = ast_inner.next().unwrap();
     let parsed_modifiers = parse_tag_modifiers(ast_tag_modifiers.as_str());
     for (name, value) in parsed_modifiers {
         initial_tag.attributes.insert(name, value);
     }
 
-    for tag_component in tag_inner {
-        match tag_component.as_rule() {
-            Rule::tag_props => {
-                for (name, value) in parse_tag_props(tag_component.as_str()) {
-                    initial_tag.attributes.insert(name, value);
-                }
-            }
-            Rule::tag_inner => {
-                for inner_element in tag_component.into_inner() {
-                    match inner_element.as_rule() {
-                        Rule::tag => {
-                            let unwrapped_tags = ytml_tag_to_ast(inner_element);
-                            for unwraped_tag in unwrapped_tags.into_iter() {
-                                initial_tag.inner.push(TagInnerElement::Tag(unwraped_tag));
-                            }
-                        }
-                        Rule::text => initial_tag
-                            .inner
-                            .push(TagInnerElement::Text(inner_element.as_str().to_owned())),
-                        _ => unreachable!(),
-                    }
-                }
-            }
-            _ => unreachable!("Did not match: {:#?}", tag_component.as_rule()),
-        }
+    let ast_props = ast_inner.next().unwrap();
+
+    for (name, value) in parse_tag_props(ast_props.as_str()) {
+        initial_tag.attributes.insert(name, value);
     }
+
+    let tag_inner = ast_inner.next().unwrap();
+    let parsed_inner = parse_tag_inner(tag_inner.as_str());
+    initial_tag.inner = parsed_inner;
+
     for _ in 1..=multiplier {
         tags.push(initial_tag.clone());
     }
@@ -149,6 +133,27 @@ pub fn parse_tag_modifiers(input: &str) -> HashMap<String, String> {
     modifiers
 }
 
+pub fn parse_tag_inner(input: &str) -> Vec<TagInnerElement> {
+    let mut inner_elements = vec![];
+    let ast = YtmlParser::parse(Rule::tag_inner, input)
+        .unwrap()
+        .next()
+        .unwrap();
+    for inner_element in ast.into_inner() {
+        match inner_element.as_rule() {
+            Rule::text => {
+                inner_elements.push(TagInnerElement::Text(inner_element.as_str().to_owned()));
+            }
+            Rule::tag => {
+                let parsed_tag = ytml_tag_to_ast(inner_element).into_iter().next().unwrap();
+                inner_elements.push(TagInnerElement::Tag(parsed_tag));
+            }
+            _ => unreachable!(),
+        }
+    }
+    inner_elements
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -181,6 +186,14 @@ mod tests {
         expected.insert("id".to_owned(), "unique".to_owned());
         assert_eq!(parsed, expected);
     }
+    #[test]
+    fn test_parse_tag_inner() {
+        let parsed = parse_tag_inner("Lorem Ipsum");
+        assert_eq!(
+            parsed,
+            vec![TagInnerElement::Text("Lorem Ipsum".to_owned())]
+        );
+    }
 
     #[test]
     fn test_parse() {
@@ -190,8 +203,6 @@ mod tests {
         let root = ast.iter().nth(0).unwrap();
         let lang = root.attributes.get("lang").unwrap();
         assert_eq!(lang, "pt-br");
-
-        // Disabling these tests for now
 
         let body = ast.iter().nth(1).unwrap();
         // Ensure that both class and id properties was parsed sucessfully

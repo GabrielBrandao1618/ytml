@@ -2,13 +2,13 @@ use std::collections::HashMap;
 #[cfg(feature = "display")]
 use std::fmt;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TagInnerElement {
     Tag(Tag),
     Text(String),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Tag {
     pub name: String,
     pub attributes: HashMap<String, String>,

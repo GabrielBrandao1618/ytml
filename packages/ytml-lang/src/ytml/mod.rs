@@ -18,8 +18,8 @@ pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
         match tag.as_rule() {
             Rule::EOI => break,
             Rule::tag => {
-                let mut unwrapped_tags = ytml_tag_to_ast(tag);
-                doc_root_tags.append(&mut unwrapped_tags);
+                let parsed_tag = parse_tag(tag);
+                doc_root_tags.push(parsed_tag);
             }
             _ => unreachable!(),
         }
@@ -27,39 +27,28 @@ pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
     doc_root_tags
 }
 
-fn ytml_tag_to_ast(tag: Pair<Rule>) -> Vec<Tag> {
-    let mut multiplier = 1;
-    let mut tags = vec![];
-    let mut initial_tag = Tag {
-        name: String::new(),
-        attributes: HashMap::new(),
-        inner: vec![],
-    };
+fn parse_tag(tag: Pair<Rule>) -> Tag {
     let mut ast_inner = tag.into_inner();
     let ast_tag_name = ast_inner.next().unwrap();
     let parsed_tag_name = ast_tag_name.as_str().to_owned();
-    initial_tag.name = parsed_tag_name;
 
     let ast_tag_modifiers = ast_inner.next().unwrap();
-    let parsed_modifiers = parse_tag_modifiers(ast_tag_modifiers.as_str());
-    for (name, value) in parsed_modifiers {
-        initial_tag.attributes.insert(name, value);
-    }
+    let mut tag_attributes = parse_tag_modifiers(ast_tag_modifiers.as_str());
 
     let ast_props = ast_inner.next().unwrap();
 
-    for (name, value) in parse_tag_props(ast_props.as_str()) {
-        initial_tag.attributes.insert(name, value);
-    }
+    tag_attributes.extend(parse_tag_props(ast_props.as_str()));
 
     let tag_inner = ast_inner.next().unwrap();
     let parsed_inner = parse_tag_inner(tag_inner.as_str());
-    initial_tag.inner = parsed_inner;
 
-    for _ in 1..=multiplier {
-        tags.push(initial_tag.clone());
-    }
-    tags
+    let parsed_tag = Tag {
+        name: parsed_tag_name,
+        attributes: tag_attributes,
+        inner: parsed_inner,
+    };
+
+    parsed_tag
 }
 
 pub fn parse_tag_prop(input: &str) -> (String, String) {
@@ -145,7 +134,7 @@ pub fn parse_tag_inner(input: &str) -> Vec<TagInnerElement> {
                 inner_elements.push(TagInnerElement::Text(inner_element.as_str().to_owned()));
             }
             Rule::tag => {
-                let parsed_tag = ytml_tag_to_ast(inner_element).into_iter().next().unwrap();
+                let parsed_tag = parse_tag(inner_element);
                 inner_elements.push(TagInnerElement::Tag(parsed_tag));
             }
             _ => unreachable!(),

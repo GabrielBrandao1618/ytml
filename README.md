@@ -25,7 +25,7 @@ Is equivalent to
 
 ```
 html(lang = "pt-br"){
-  body {
+  body() {
     p.paragraph#first(color = "blue") {
       Hello there
     }
@@ -49,9 +49,9 @@ Also, with the multiply operator(\*), you can avoid repetition, so
 Can be wrote this way
 
 ```
-html {
-  body {
-    p*4 {
+html() {
+  body() {
+    p*4() {
       Hello!
     }
   }

@@ -1,7 +1,7 @@
 use std::{collections::HashMap, sync::RwLock};
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use ytml_lang::{html::ast_to_html, ytml::ytml_doc_to_ast, tokens::Tag};
+use ytml_lang::{html::ast_to_html, tokens::Tag, ytml::parse_ytml_file};
 
 fn criterion_benchmark(c: &mut Criterion) {
     let doc = RwLock::new(vec![Tag {
@@ -18,7 +18,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     let raw_ytml = "html {body {}}";
     c.bench_function("ytml to ast", |b| {
         b.iter(|| {
-            ytml_doc_to_ast(black_box(raw_ytml));
+            parse_ytml_file(black_box(raw_ytml));
         });
     });
 }

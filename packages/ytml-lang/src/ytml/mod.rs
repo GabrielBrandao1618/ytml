@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use pest::{iterators::Pair, Parser};
+use pest::Parser;
 
 use crate::tokens::{Tag, TagInnerElement};
 
@@ -8,7 +8,7 @@ use crate::tokens::{Tag, TagInnerElement};
 #[grammar = "ytml/grammar/ytml.pest"]
 struct YtmlParser {}
 
-pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
+pub fn parse_ytml_file(input: &str) -> Vec<Tag> {
     // Store all doc's root tags and then return it
     let mut doc_root_tags: Vec<Tag> = vec![];
     let mut pairs = YtmlParser::parse(Rule::doc, input).expect("Syntax error");
@@ -18,7 +18,7 @@ pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
         match tag.as_rule() {
             Rule::EOI => break,
             Rule::tag => {
-                let parsed_tag = parse_tag(tag);
+                let parsed_tag = parse_tag(tag.as_str());
                 doc_root_tags.push(parsed_tag);
             }
             _ => unreachable!(),
@@ -27,8 +27,9 @@ pub fn ytml_doc_to_ast(input: &str) -> Vec<Tag> {
     doc_root_tags
 }
 
-fn parse_tag(tag: Pair<Rule>) -> Tag {
-    let mut ast_inner = tag.into_inner();
+fn parse_tag(input: &str) -> Tag {
+    let ast = YtmlParser::parse(Rule::tag, input).unwrap().next().unwrap();
+    let mut ast_inner = ast.into_inner();
     let ast_tag_name = ast_inner.next().unwrap();
     let parsed_tag_name = ast_tag_name.as_str().to_owned();
 
@@ -134,7 +135,7 @@ pub fn parse_tag_inner(input: &str) -> Vec<TagInnerElement> {
                 inner_elements.push(TagInnerElement::Text(inner_element.as_str().to_owned()));
             }
             Rule::tag => {
-                let parsed_tag = parse_tag(inner_element);
+                let parsed_tag = parse_tag(inner_element.as_str());
                 inner_elements.push(TagInnerElement::Tag(parsed_tag));
             }
             _ => unreachable!(),
@@ -188,7 +189,7 @@ mod tests {
     fn test_parse() {
         let raw_ytml =
             "html(lang = \"pt-br\"){ } body.container1#unique2(color = \"blue\"){p(color=\"red\"){content}}";
-        let ast = ytml_doc_to_ast(raw_ytml);
+        let ast = parse_ytml_file(raw_ytml);
         let root = ast.iter().nth(0).unwrap();
         let lang = root.attributes.get("lang").unwrap();
         assert_eq!(lang, "pt-br");

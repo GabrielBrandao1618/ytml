@@ -104,7 +104,10 @@ pub fn parse_tag_modifier(input: &str) -> (String, String) {
             let inner_class = ast.into_inner().next().unwrap();
             ("id".to_owned(), inner_class.as_str().to_owned())
         }
-        Rule::tag_multiplier => todo!(),
+        Rule::tag_multiplier => {
+            let inner_class = ast.into_inner().next().unwrap();
+            ("multiplier".to_owned(), inner_class.as_str().to_owned())
+        }
         _ => unreachable!(),
     }
 }

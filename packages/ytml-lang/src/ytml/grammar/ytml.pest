@@ -4,7 +4,7 @@ string                  = ${ "\"" ~ text ~ "\"" }
 tag_name                = @{ (ASCII_ALPHA | "-" | "_")+ }
 prop_name               = @{ (ASCII_ALPHA | "-" | "_")+ }
 prop_value              =  { string }
-tag_props               =  { "(" ~ tag_prop+ ~ ")" }
+tag_props               =  { "(" ~ tag_prop* ~ ")" }
 tag_prop                =  { prop_name ~ "=" ~ prop_value }
 tag_inner               =  { (tag+ | text)* }
 tag_multiplier          =  { "*" ~ int }

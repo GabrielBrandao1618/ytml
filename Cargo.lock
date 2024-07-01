@@ -381,6 +381,9 @@ checksum = "443144c8cdadd93ebf52ddb4056d257f5b52c04d3c804e657d19eb73fc33668b"
 [[package]]
 name = "inner-content"
 version = "0.1.0"
+dependencies = [
+ "ytml-lang",
+]
 
 [[package]]
 name = "inotify"
@@ -666,6 +669,9 @@ dependencies = [
 [[package]]
 name = "read-file"
 version = "0.1.0"
+dependencies = [
+ "ytml-lang",
+]
 
 [[package]]
 name = "redox_syscall"

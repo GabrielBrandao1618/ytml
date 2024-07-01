@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ytml-lang = {path = "../../packages/ytml-lang", features = ["display", "fs"]}
 
 [[bin]]
 name = "read-file"

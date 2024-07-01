@@ -1,4 +1,4 @@
-use ytml_lang::tokens::{TagInnerElement, Tag};
+use ytml_lang::tokens::{Tag, TagInnerElement};
 
 use std::collections::HashMap;
 
@@ -17,4 +17,3 @@ fn main() {
     };
     println!("{}", div);
 }
-

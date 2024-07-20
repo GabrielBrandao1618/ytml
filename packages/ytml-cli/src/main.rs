@@ -1,11 +1,13 @@
 mod cli;
+mod fs;
 
 use clap::Parser;
-use ytml_lang::fs::parse_ytml_file;
 
 use notify::{Config, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
 use std::sync::mpsc::channel;
+
+use fs::ytml_file_to_html;
 
 use cli::{Cli, Command};
 
@@ -17,7 +19,7 @@ fn main() -> notify::Result<()> {
             output_file,
             indent,
         } => {
-            let (input, out) = parse_ytml_file(input_file, output_file, indent.into());
+            let (input, out) = ytml_file_to_html(input_file, output_file, indent.into());
             println!("Compiled {in} into {out}", in = input, out = out);
             Ok(())
         }
@@ -41,7 +43,7 @@ fn main() -> notify::Result<()> {
                     Ok(event) => match &event.kind {
                         notify::EventKind::Modify(_) => {
                             if input_file_path.is_file() {
-                                let (_, output) = parse_ytml_file(
+                                let (_, output) = ytml_file_to_html(
                                     input_file_path.to_str().unwrap().to_owned(),
                                     output_file.clone(),
                                     indent.into(),
@@ -52,7 +54,7 @@ fn main() -> notify::Result<()> {
                                 let input_file_paths = event.paths;
                                 for path in input_file_paths {
                                     if path.extension().unwrap() == "ytml" {
-                                        let (_, out) = parse_ytml_file(
+                                        let (_, out) = ytml_file_to_html(
                                             path.to_str().unwrap().to_owned(),
                                             None,
                                             indent.into(),

@@ -16,11 +16,10 @@ members = [
   "packages/ytml-lang",
   "packages/ytml-cli",
   "examples/inner-content",
-  "examples/read-file"
 ]
 
 [workspace.dependencies]
-ytml-lang = {path = "packages/ytml-lang", features = ["fs"] }
+ytml-lang = {path = "packages/ytml-lang"}
 
 # Benchmark settings
 [dev-dependencies]

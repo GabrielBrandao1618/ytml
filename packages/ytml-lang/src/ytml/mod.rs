@@ -4,16 +4,24 @@ use pest::Parser;
 
 use crate::tokens::{Tag, TagInnerElement};
 
+use self::error::{YtmlError, YtmlErrorKind, YtmlResult};
+
+mod error;
+
 #[derive(pest_derive::Parser)]
 #[grammar = "ytml/grammar/ytml.pest"]
 struct YtmlParser {}
 
-pub fn parse_ytml_file(input: &str) -> Vec<Tag> {
+pub fn parse_ytml_file(input: &str) -> YtmlResult<Vec<Tag>> {
     // Store all doc's root tags and then return it
     let mut doc_root_tags: Vec<Tag> = vec![];
-    let mut pairs = YtmlParser::parse(Rule::doc, input).expect("Syntax error");
+    let mut pairs =
+        YtmlParser::parse(Rule::doc, input).map_err(|_| YtmlError::new(YtmlErrorKind::Parsing))?;
 
-    let tags = pairs.next().expect("Syntax error").into_inner();
+    let tags = pairs
+        .next()
+        .ok_or(YtmlError::new(YtmlErrorKind::Parsing))?
+        .into_inner();
     for tag in tags {
         match tag.as_rule() {
             Rule::EOI => break,
@@ -24,7 +32,7 @@ pub fn parse_ytml_file(input: &str) -> Vec<Tag> {
             _ => unreachable!(),
         }
     }
-    doc_root_tags
+    Ok(doc_root_tags)
 }
 
 fn parse_tag(input: &str) -> Tag {
@@ -192,7 +200,7 @@ mod tests {
     fn test_parse() {
         let raw_ytml =
             "html(lang = \"pt-br\"){ } body.container1#unique2(color = \"blue\"){p(color=\"red\"){content}}";
-        let ast = parse_ytml_file(raw_ytml);
+        let ast = parse_ytml_file(raw_ytml).unwrap();
         let root = ast.iter().nth(0).unwrap();
         let lang = root.attributes.get("lang").unwrap();
         assert_eq!(lang, "pt-br");

@@ -13,7 +13,7 @@ pub fn read_file_into_ast(file_path: &str) -> Vec<Tag> {
     let mut file_content = String::new();
     file.read_to_string(&mut file_content)
         .expect("Could not read the file");
-    let parsed_ast = parse_ytml_file(&file_content);
+    let parsed_ast = parse_ytml_file(&file_content).unwrap();
     return parsed_ast;
 }
 

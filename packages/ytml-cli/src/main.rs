@@ -4,8 +4,7 @@ mod fs;
 use clap::Parser;
 
 use notify::{Config, RecommendedWatcher, RecursiveMode, Watcher};
-use std::path::Path;
-use std::sync::mpsc::channel;
+use std::{path::Path, sync::mpsc::channel};
 
 use fs::ytml_file_to_html;
 
@@ -19,8 +18,13 @@ fn main() -> notify::Result<()> {
             output_file,
             indent,
         } => {
-            let (input, out) = ytml_file_to_html(input_file, output_file, indent.into());
-            println!("Compiled {in} into {out}", in = input, out = out);
+            let result = ytml_file_to_html(input_file, output_file, indent.into());
+            match result {
+                Ok((input, out)) => {
+                    println!("Compiled {in} into {out}", in = input, out = out);
+                }
+                Err(err) => println!("{err}"),
+            }
             Ok(())
         }
 
@@ -32,7 +36,7 @@ fn main() -> notify::Result<()> {
             let (tx, rx) = channel();
 
             let input_file_path = Path::new(&input_file);
-            let mut file_watcher = RecommendedWatcher::new(tx, Config::default()).unwrap();
+            let mut file_watcher = RecommendedWatcher::new(tx, Config::default())?;
             file_watcher
                 .watch(input_file_path, RecursiveMode::NonRecursive)
                 .unwrap();
@@ -43,23 +47,33 @@ fn main() -> notify::Result<()> {
                     Ok(event) => match &event.kind {
                         notify::EventKind::Modify(_) => {
                             if input_file_path.is_file() {
-                                let (_, output) = ytml_file_to_html(
+                                let result = ytml_file_to_html(
                                     input_file_path.to_str().unwrap().to_owned(),
                                     output_file.clone(),
                                     indent.into(),
                                 );
-                                println!("Compiled {in} into {out}", in = input_file, out = output);
+                                match result {
+                                    Ok((_, output)) => {
+                                        println!("Compiled {in} into {out}", in = input_file, out = output);
+                                    }
+                                    Err(err) => println!("{err}"),
+                                }
                             } else if input_file_path.is_dir() {
                                 // Watch for all files in the directory
                                 let input_file_paths = event.paths;
                                 for path in input_file_paths {
                                     if path.extension().unwrap() == "ytml" {
-                                        let (_, out) = ytml_file_to_html(
+                                        let result = ytml_file_to_html(
                                             path.to_str().unwrap().to_owned(),
                                             None,
                                             indent.into(),
                                         );
-                                        println!("Compiled {in} into {out}", in = path.to_str().unwrap(), out = out);
+                                        match result {
+                                            Ok((input, out)) => {
+                                                println!("Compiled {in} into {out}", in = input, out = out);
+                                            }
+                                            Err(err) => println!("{err}"),
+                                        }
                                     }
                                 }
                             }

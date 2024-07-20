@@ -6,7 +6,7 @@ use crate::tokens::{Tag, TagInnerElement};
 
 use self::error::{YtmlError, YtmlErrorKind, YtmlResult};
 
-mod error;
+pub mod error;
 
 #[derive(pest_derive::Parser)]
 #[grammar = "ytml/grammar/ytml.pest"]
